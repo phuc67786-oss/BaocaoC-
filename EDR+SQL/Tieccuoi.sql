@@ -1,0 +1,171 @@
+CREATE DATABASE QuanLyDatTiecCuoi
+GO
+
+USE QuanLyDatTiecCuoi
+GO
+
+
+CREATE TABLE Menu (
+    MaMenu BIGINT IDENTITY(1,1) PRIMARY KEY,
+    TenMenu NVARCHAR(255) NOT NULL,
+    TenController VARCHAR(100) NULL,
+    TenAction VARCHAR(100) NULL,
+    CapMenu INT DEFAULT 1,
+    MenuCha BIGINT NULL,
+    DuongDan VARCHAR(255) NULL,
+    ThuTuMenu INT DEFAULT 0,
+    ViTri INT DEFAULT 0
+)
+
+
+CREATE TABLE GioiThieu (
+    MaGioiThieu BIGINT IDENTITY(1,1) PRIMARY KEY,
+    TieuDe NVARCHAR(255) NOT NULL,
+    NoiDung NVARCHAR(MAX) NULL,
+    HinhAnh VARCHAR(255) NULL
+)
+
+CREATE TABLE LienHe (
+    MaLienHe BIGINT IDENTITY(1,1) PRIMARY KEY,
+    DiaChi NVARCHAR(255) NOT NULL,
+    Email VARCHAR(255) UNIQUE NOT NULL,
+    SoDienThoai VARCHAR(20) NOT NULL,
+    MaMenu BIGINT,
+    
+    CONSTRAINT FK_LienHe_Menu
+    FOREIGN KEY (MaMenu) REFERENCES Menu(MaMenu)
+)
+
+
+CREATE TABLE NhanVien (
+    MaNhanVien BIGINT IDENTITY(1,1) PRIMARY KEY,
+    HoTen NVARCHAR(255) NOT NULL,
+    ChucVu NVARCHAR(255) NULL,
+    HinhAnh VARCHAR(255) NULL,
+    MaMenu BIGINT,
+
+    CONSTRAINT FK_NhanVien_Menu
+    FOREIGN KEY (MaMenu) REFERENCES Menu(MaMenu)
+)
+
+
+CREATE TABLE MangXaHoiNhanVien (
+    MaNhanVien BIGINT PRIMARY KEY,
+    Facebook VARCHAR(255) NULL,
+    YouTube VARCHAR(255) NULL,
+    Instagram VARCHAR(255) NULL,
+
+    CONSTRAINT FK_MXH_NhanVien
+    FOREIGN KEY (MaNhanVien) REFERENCES NhanVien(MaNhanVien)
+)
+
+
+CREATE TABLE DanhMucMonAn (
+    MaDanhMuc BIGINT IDENTITY(1,1) PRIMARY KEY,
+    TenDanhMuc NVARCHAR(255) NOT NULL,
+    HoatDong BIT DEFAULT 1
+)
+
+
+CREATE TABLE MonAn (
+    MaMon BIGINT IDENTITY(1,1) PRIMARY KEY,
+    MaDanhMuc BIGINT,
+    TenMon NVARCHAR(255) NOT NULL,
+    HinhAnh VARCHAR(255) NULL,
+    MoTa NVARCHAR(MAX) NULL,
+    GiaTien DECIMAL(18,2) NOT NULL,
+    HoatDong BIT DEFAULT 1,
+
+    CONSTRAINT FK_MonAn_DanhMuc
+    FOREIGN KEY (MaDanhMuc) REFERENCES DanhMucMonAn(MaDanhMuc)
+)
+
+
+CREATE TABLE DanhMucSuKien (
+    MaLoaiSuKien BIGINT IDENTITY(1,1) PRIMARY KEY,
+    TenLoaiSuKien NVARCHAR(255) NOT NULL,
+    HoatDong BIT DEFAULT 1
+)
+
+
+CREATE TABLE SuKien (
+    MaSuKien BIGINT IDENTITY(1,1) PRIMARY KEY,
+    TenSuKien NVARCHAR(255) NOT NULL,
+    MaLoaiSuKien BIGINT,
+    HinhAnh VARCHAR(255) NULL,
+    HoatDong BIT DEFAULT 1,
+
+    CONSTRAINT FK_SuKien_DanhMuc
+    FOREIGN KEY (MaLoaiSuKien) REFERENCES DanhMucSuKien(MaLoaiSuKien)
+)
+
+CREATE TABLE KhachHang (
+    MaKhachHang BIGINT IDENTITY(1,1) PRIMARY KEY,
+    TenKhachHang NVARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL,
+    LoiNhan NVARCHAR(MAX) NULL
+)
+
+CREATE TABLE DatTiec (
+    MaDatTiec BIGINT IDENTITY(1,1) PRIMARY KEY,
+    QuocGia NVARCHAR(100) NULL,
+    ThanhPho NVARCHAR(100) NULL,
+    DiaDiem NVARCHAR(255) NULL,
+    LoaiSuKien NVARCHAR(255) NULL,
+    SoLuongKhach INT DEFAULT 1,
+    AnChay BIT DEFAULT 0,
+    SoDienThoai VARCHAR(20) NOT NULL,
+    NgayDat DATETIME NOT NULL,
+    Email VARCHAR(255) NOT NULL,
+    MaKhachHang BIGINT,
+
+    CONSTRAINT FK_DatTiec_KhachHang
+    FOREIGN KEY (MaKhachHang) REFERENCES KhachHang(MaKhachHang)
+)
+
+
+CREATE TABLE TaiKhoan (
+    TenDangNhap VARCHAR(100) PRIMARY KEY,
+    MatKhau VARCHAR(255) NOT NULL,
+    LoaiTaiKhoan VARCHAR(50) NOT NULL
+)
+
+
+CREATE TABLE DichVu (
+    MaDichVu BIGINT IDENTITY(1,1) PRIMARY KEY,
+    HinhAnh VARCHAR(255) NULL,
+    TenDichVu NVARCHAR(255) NOT NULL,
+    NoiDung NVARCHAR(MAX) NULL,
+    MaMenu BIGINT,
+    HoatDong BIT DEFAULT 1,
+
+    CONSTRAINT FK_DichVu_Menu
+    FOREIGN KEY (MaMenu) REFERENCES Menu(MaMenu)
+)
+
+
+CREATE TABLE BaiViet (
+    MaBaiViet BIGINT IDENTITY(1,1) PRIMARY KEY,
+    TieuDe NVARCHAR(255) NOT NULL,
+    TomTat NVARCHAR(MAX) NULL,
+    NoiDung NVARCHAR(MAX) NULL,
+    HinhAnh VARCHAR(255) NULL,
+    DuongDan VARCHAR(255) NULL,
+    NgayDang DATETIME NOT NULL,
+    HoatDong BIT DEFAULT 1,
+    ThuTuHienThi INT DEFAULT 0,
+    DanhMuc BIGINT NULL
+)
+
+
+CREATE TABLE MenuQuanTri (
+    MaMenuQuanTri BIGINT IDENTITY(1,1) PRIMARY KEY,
+    TenMuc NVARCHAR(255) NOT NULL,
+    CapDo INT DEFAULT 1,
+    MucCha BIGINT NULL,
+    ThuTu INT DEFAULT 0,
+    HoatDong BIT DEFAULT 1,
+    KhuVuc VARCHAR(100) NULL,
+    TenController VARCHAR(100) NULL,
+    BieuTuong VARCHAR(100) NULL
+)
